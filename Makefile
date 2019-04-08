@@ -1,10 +1,26 @@
-NAME = webassembly-tests-go
-BUILDDIR = pkg
-GOROOT = $(shell go env GOROOT)
+.PHONY: setup build doc fmt run test clean destroy
+# lint vendor_clean vendor_get vendor_update vet
 
-default:
-	GOOS=js GOARCH=wasm go build -o "${BUILDDIR}/${NAME}.wasm"
-	cp "${GOROOT}/misc/wasm/wasm_exec.js" "${BUILDDIR}"
+PROJECT=webassembly-tests-go
+
+export GOPATH=${PWD}/:$(shell go env GOROOT)
+export GOROOT=$(shell go env GOROOT)
+
+
+default: build
+
+build:
+	GOOS=js GOARCH=wasm go build -o ./bin/${PROJECT}.wasm ./src
+	cp "${GOROOT}/misc/wasm/wasm_exec.js" ./bin
+
+doc:
+	godoc -http=:6060 -index
+
+fmt:
+	go fmt ./src/...
+
+test:
+	go test ./src/tests/...
 
 clean:
-	rm -f ${NAME} *.wasm
+	rm -rf ./bin

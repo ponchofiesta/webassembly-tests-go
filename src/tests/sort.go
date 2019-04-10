@@ -1,7 +1,5 @@
 package tests
 
-import "sort"
-
 type Person struct {
 	Id   int
 	Name string
@@ -22,5 +20,5 @@ func (a ByName) Swap(i, j int) {
 }
 
 func sorter() {
-	return sort.Sort(ByName(data))
+	//return sort.Sort(ByName(data))
 }

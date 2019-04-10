@@ -3,6 +3,7 @@ package main
 import (
 	"syscall/js"
 	"tests"
+	Hanoi "tests/hanoi/closure"
 )
 
 func main() {
@@ -13,7 +14,7 @@ func main() {
 		return tests.Fibonacci(args[0].Int())
 	})
 	exports["hanoi"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		hanoi := tests.Hanoi()
+		hanoi := Hanoi.Hanoi()
 		return hanoi(args[0].Int(), args[1].String(), args[2].String(), args[3].String())
 	})
 

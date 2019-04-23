@@ -1,11 +1,13 @@
 package tests
 
-type Person struct {
+import "sort"
+
+type User struct {
 	Id   int
 	Name string
 }
 
-type ByName []Person
+type ByName []User
 
 func (a ByName) Len() int {
 	return len(a)
@@ -19,6 +21,7 @@ func (a ByName) Swap(i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
-func sorter() {
-	//return sort.Sort(ByName(data))
+func Sort(data []User) []User {
+	sort.Sort(ByName(data))
+	return data
 }

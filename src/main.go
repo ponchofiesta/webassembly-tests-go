@@ -24,6 +24,11 @@ func main() {
 		tests.Sort(DATA_SORT)
 		return nil
 	})
+	exports["prime"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		js.Global().Get("console").Call("debug", "Go: prime")
+		tests.Prime(uint64(args[0].Float()))
+		return nil
+	})
 
 	exports["prepare_test_data"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		js.Global().Get("console").Call("debug", "Go: prepare_test_data")

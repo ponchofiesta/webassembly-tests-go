@@ -1,4 +1,4 @@
-package tests
+package hanoi
 
 import "testing"
 import "tests/hanoi/class_to_string"

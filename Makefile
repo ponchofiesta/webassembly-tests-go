@@ -10,7 +10,7 @@ export GOROOT=$(shell go env GOROOT)
 default: build
 
 build:
-	GOOS=js GOARCH=wasm go build -o ./bin/${PROJECT}.wasm ./src
+	GOOS=js GOARCH=wasm GODEBUG=gcstoptheworld=1 GOGC=20 go build -o ./bin/${PROJECT}.wasm ./src
 	cp "${GOROOT}/misc/wasm/wasm_exec.js" ./bin
 
 doc:

@@ -1,9 +1,9 @@
 package hanoi
 
 import "testing"
-import "tests/hanoi/class_to_string"
-import "tests/hanoi/class"
-import "tests/hanoi/closure"
+import "benchmarks/hanoi/class_to_string"
+import "benchmarks/hanoi/class"
+import "benchmarks/hanoi/closure"
 
 func BenchmarkHanoiBuilderClassToString(b *testing.B) {
 	b.StartTimer()

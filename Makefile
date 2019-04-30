@@ -1,7 +1,7 @@
 .PHONY: setup build doc fmt run test clean destroy
 # lint vendor_clean vendor_get vendor_update vet
 
-PROJECT=webassembly-tests-go
+PROJECT=webassembly-benchmarks-go
 
 export GOPATH=${PWD}/:$(shell go env GOROOT)
 export GOROOT=$(shell go env GOROOT)

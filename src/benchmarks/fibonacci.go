@@ -1,4 +1,4 @@
-package tests
+package benchmarks
 
 func Fibonacci(n int) int {
 	if n < 2 {

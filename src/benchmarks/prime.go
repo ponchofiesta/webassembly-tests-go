@@ -1,4 +1,4 @@
-package tests
+package benchmarks
 
 func Prime(max uint64) []uint64 {
 

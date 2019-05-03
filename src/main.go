@@ -41,6 +41,16 @@ func main() {
 		benchmarks.Deflate(DATA_BYTES)
 		return nil
 	})
+	exports["convolve"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		js.Global().Get("console").Call("debug", "Go: convolve")
+		matrix := []float64{
+			0.0, 0.2, 0.0,
+			0.2, 0.2, 0.2,
+			0.0, 0.2, 0.0,
+		}
+		benchmarks.Convolve(args[0], matrix, 1)
+		return nil
+	})
 
 	exports["prepare_test_data"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		js.Global().Get("console").Call("debug", "Go: prepare_test_data")

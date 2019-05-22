@@ -4,6 +4,7 @@ import (
 	"benchmarks"
 	Hanoi "benchmarks/hanoi/closure"
 	"syscall/js"
+	"unsafe"
 )
 
 func main() {
@@ -51,6 +52,21 @@ func main() {
 		benchmarks.Convolve(args[0], matrix, 1)
 		return nil
 	})
+	exports["convolve_mem"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		js.Global().Get("console").Call("debug", "Go: convolve_mem")
+		ptr := uintptr(args[0].Int())
+		width := args[1].Int()
+		height := args[2].Int()
+		size := width * height * 4
+		data := (*[1 << 30]byte)(unsafe.Pointer(ptr))[:size:size]
+		matrix := []float64{
+			0.0, 0.2, 0.0,
+			0.2, 0.2, 0.2,
+			0.0, 0.2, 0.0,
+		}
+		benchmarks.ConvolveMem(data, width, height, matrix, 1)
+		return nil
+	})
 
 	exports["prepare_test_data"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		js.Global().Get("console").Call("debug", "Go: prepare_test_data")
@@ -95,6 +111,16 @@ func main() {
 			DATA_BYTES = nil
 		}
 		return nil
+	})
+
+	exports["malloc"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: alloc")
+		size := args[0].Int()
+		//js.Global().Get("console").Call("debug", "Go: alloc: " + strconv.Itoa(size))
+		mem := make([]byte, size)
+		ptr := uintptr(unsafe.Pointer(&mem))
+		//js.Global().Get("console").Call("debug", "Go: alloc: " + fmt.Sprint(ptr))
+		return uint64(ptr)
 	})
 
 	js.Global().Get("wasm").Set("go", exports)

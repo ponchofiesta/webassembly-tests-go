@@ -112,16 +112,16 @@ func main() {
 		}
 		return nil
 	})
-
-	exports["malloc"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		//js.Global().Get("console").Call("debug", "Go: alloc")
-		size := args[0].Int()
-		//js.Global().Get("console").Call("debug", "Go: alloc: " + strconv.Itoa(size))
-		mem := make([]byte, size)
-		ptr := uintptr(unsafe.Pointer(&mem))
-		//js.Global().Get("console").Call("debug", "Go: alloc: " + fmt.Sprint(ptr))
-		return uint64(ptr)
-	})
+	//
+	//exports["malloc"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	//	//js.Global().Get("console").Call("debug", "Go: alloc")
+	//	size := args[0].Int()
+	//	//js.Global().Get("console").Call("debug", "Go: alloc: " + strconv.Itoa(size))
+	//	mem := make([]byte, size)
+	//	ptr := uintptr(unsafe.Pointer(&mem))
+	//	//js.Global().Get("console").Call("debug", "Go: alloc: " + fmt.Sprint(ptr))
+	//	return uint64(ptr)
+	//})
 
 	js.Global().Get("wasm").Set("go", exports)
 

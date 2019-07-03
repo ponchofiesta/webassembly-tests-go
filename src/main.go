@@ -11,6 +11,33 @@ func main() {
 	done := make(chan struct{})
 	exports := make(map[string]interface{})
 
+	exports["iterate"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: iterate")
+		benchmarks.Iterate(args[0].Int())
+		return nil
+	})
+	exports["strings_dynamic"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: strings_dynamic")
+		return benchmarks.StringsDynamic(args[0].String(), args[1].String())
+	})
+	exports["strings_static"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: strings_dynamic")
+		repeat := args[0].Int()
+		a := "hello world"
+		b := "world"
+		for i := 0; i < repeat; i++ {
+			benchmarks.StringsDynamic(a, b)
+		}
+		return nil
+	})
+	exports["sum"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: strings_dynamic")
+		repeat := args[0].Int()
+		for i := 0; i < repeat; i++ {
+			benchmarks.Sum([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
+		}
+		return nil
+	})
 	exports["fibonacci"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		js.Global().Get("console").Call("debug", "Go: fobonacci")
 		return benchmarks.Fibonacci(args[0].Int())

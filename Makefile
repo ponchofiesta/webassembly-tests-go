@@ -2,25 +2,25 @@
 # lint vendor_clean vendor_get vendor_update vet
 
 PROJECT=webassembly-benchmarks-go
-
-export GOPATH=${PWD}/:$(shell go env GOROOT)
+#export GOPATH=${PWD}/:$(shell go env GOPATH)
 export GOROOT=$(shell go env GOROOT)
+BUILD_DIR=./build
 
 
 default: build
 
 build:
-	GOOS=js GOARCH=wasm GODEBUG=gcstoptheworld=1 GOGC=20 go build -o ./bin/${PROJECT}.wasm ./src
-	cp "${GOROOT}/misc/wasm/wasm_exec.js" ./bin
+	GOOS=js GOARCH=wasm GODEBUG=gcstoptheworld=1 GOGC=20 go build -o "${BUILD_DIR}/${PROJECT}.wasm"
+	cp "${GOROOT}/misc/wasm/wasm_exec.js" "${BUILD_DIR}"
 
 doc:
 	godoc -http=:6060 -index
 
 fmt:
-	go fmt ./src/...
+	go fmt ./...
 
 test:
-	go test ./src/tests/...
+	go test ./...
 
 clean:
-	rm -rf ./bin
+	rm -rf "$BUILD_DIR"

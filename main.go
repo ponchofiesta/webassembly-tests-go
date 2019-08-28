@@ -1,10 +1,17 @@
 package main
 
 import (
-	"benchmarks"
-	Hanoi "benchmarks/hanoi/closure"
 	"syscall/js"
 	"unsafe"
+	"webassembly_benchmarks_go/benchmarks"
+	Hanoi "webassembly_benchmarks_go/benchmarks/hanoi/closure"
+)
+
+var (
+	DATA_SORT_BASE  []benchmarks.User
+	DATA_SORT       []benchmarks.User
+	DATA_BYTES_BASE []byte
+	DATA_BYTES      []byte
 )
 
 func main() {
@@ -139,16 +146,6 @@ func main() {
 		}
 		return nil
 	})
-	//
-	//exports["malloc"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-	//	//js.Global().Get("console").Call("debug", "Go: alloc")
-	//	size := args[0].Int()
-	//	//js.Global().Get("console").Call("debug", "Go: alloc: " + strconv.Itoa(size))
-	//	mem := make([]byte, size)
-	//	ptr := uintptr(unsafe.Pointer(&mem))
-	//	//js.Global().Get("console").Call("debug", "Go: alloc: " + fmt.Sprint(ptr))
-	//	return uint64(ptr)
-	//})
 
 	js.Global().Get("wasm").Set("go", exports)
 

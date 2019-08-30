@@ -2,13 +2,12 @@ package benchmarks
 
 import (
 	"math"
-	"syscall/js"
 )
 
-func ConvolveMem(data []byte, width int, height int, matrix []float64, factor float64) {
+func ConvolveMem(data []byte, width int, height int, matrix []float64, factor float64) []byte {
 	//js.Global().Get("console").Call("debug", len(data))
 	side := int(math.Sqrt(float64(len(matrix))))
-	halfSide := int(side / 2)
+	halfSide := side / 2
 	newData := make([]byte, width*height*4)
 
 	for y := 0; y < height; y++ {
@@ -36,6 +35,6 @@ func ConvolveMem(data []byte, width int, height int, matrix []float64, factor fl
 			newData[outputIndex+3] = data[outputIndex+3]
 		}
 	}
-	copy(data, newData)
-	js.Global().Get("console").Call("debug", "Go: convolve_mem: done")
+	return newData
+	//js.Global().Get("console").Call("debug", "Go: convolve_mem: done")
 }

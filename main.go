@@ -2,7 +2,6 @@ package main
 
 import (
 	"syscall/js"
-	"unsafe"
 	"webassembly_benchmarks_go/benchmarks"
 	Hanoi "webassembly_benchmarks_go/benchmarks/hanoi/closure"
 )
@@ -13,6 +12,23 @@ var (
 	DATA_BYTES_BASE []byte
 	DATA_BYTES      []byte
 )
+
+func copyByteArrayToGo(input js.Value) []byte {
+	uint8arrayWrapper := js.Global().Get("Uint8Array").New(input)
+	data := make([]byte, uint8arrayWrapper.Get("byteLength").Int())
+	reader := js.TypedArrayOf(data)
+	reader.Call("set", uint8arrayWrapper)
+	reader.Release()
+	return data
+}
+
+func copyByteArrayToJs(input []byte) js.Value {
+	writer := js.TypedArrayOf(input)
+	data := js.Global().Get("Uint8Array").New(len(input))
+	data.Call("set", writer)
+	writer.Release()
+	return data
+}
 
 func main() {
 	done := make(chan struct{})
@@ -46,38 +62,38 @@ func main() {
 		return nil
 	})
 	exports["fibonacci"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		js.Global().Get("console").Call("debug", "Go: fobonacci")
+		//js.Global().Get("console").Call("debug", "Go: fobonacci")
 		return benchmarks.Fibonacci(args[0].Int())
 	})
 	exports["hanoi"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		js.Global().Get("console").Call("debug", "Go: hanoi")
+		//js.Global().Get("console").Call("debug", "Go: hanoi")
 		hanoi := Hanoi.Hanoi()
 		return hanoi(args[0].Int(), args[1].String(), args[2].String(), args[3].String())
 	})
 	exports["sort"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		js.Global().Get("console").Call("debug", "Go: sort")
+		//js.Global().Get("console").Call("debug", "Go: sort")
 		benchmarks.Sort(DATA_SORT)
 		return nil
 	})
 	exports["prime"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		js.Global().Get("console").Call("debug", "Go: prime")
+		//js.Global().Get("console").Call("debug", "Go: prime")
 		benchmarks.Prime(uint64(args[0].Float()))
 		return nil
 	})
 	exports["aes"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		js.Global().Get("console").Call("debug", "Go: aes")
+		//js.Global().Get("console").Call("debug", "Go: aes")
 		key := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
 		iv := []byte{17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}
 		benchmarks.AesEncrypt(key, iv, DATA_BYTES)
 		return nil
 	})
 	exports["deflate"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		js.Global().Get("console").Call("debug", "Go: deflate")
+		//js.Global().Get("console").Call("debug", "Go: deflate")
 		benchmarks.Deflate(DATA_BYTES)
 		return nil
 	})
 	exports["convolve"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		js.Global().Get("console").Call("debug", "Go: convolve")
+		//js.Global().Get("console").Call("debug", "Go: convolve")
 		matrix := []float64{
 			0.0, 0.2, 0.0,
 			0.2, 0.2, 0.2,
@@ -87,19 +103,34 @@ func main() {
 		return nil
 	})
 	exports["convolve_mem"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		js.Global().Get("console").Call("debug", "Go: convolve_mem")
-		ptr := uintptr(args[0].Int())
+		//js.Global().Get("console").Call("debug", "Go: convolve_mem")
 		width := args[1].Int()
 		height := args[2].Int()
-		size := width * height * 4
-		data := (*[1 << 30]byte)(unsafe.Pointer(ptr))[:size:size]
+		data := copyByteArrayToGo(args[0])
 		matrix := []float64{
 			0.0, 0.2, 0.0,
 			0.2, 0.2, 0.2,
 			0.0, 0.2, 0.0,
 		}
-		benchmarks.ConvolveMem(data, width, height, matrix, 1)
-		return nil
+		data = benchmarks.ConvolveMem(data, width, height, matrix, 1)
+		outData := copyByteArrayToJs(data)
+		return outData
+	})
+	exports["convolve_video"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: convolve_video")
+		width := args[1].Int()
+		height := args[2].Int()
+		factor := args[3].Float()
+		count := args[4].Int()
+		data := copyByteArrayToGo(args[0])
+		matrix := [][]float64{
+			{1.0, 1.0, 1.0},
+			{1.0, 1.0, 1.0},
+			{1.0, 1.0, 1.0},
+		}
+		data = benchmarks.ConvolveVideo(data, width, height, matrix, factor, count)
+		outData := copyByteArrayToJs(data)
+		return outData
 	})
 
 	exports["prepare_test_data"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {

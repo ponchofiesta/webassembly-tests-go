@@ -11,7 +11,7 @@ BUILD_DIR=./build
 default: build
 
 build:
-	GOOS=js GOARCH=wasm GODEBUG=gcstoptheworld=1 GOGC=20 ${GO} build -o "${BUILD_DIR}/${PROJECT}.wasm"
+	GOOS=js GOARCH=wasm GOGC=20 ${GO} build -o "${BUILD_DIR}/${PROJECT}.wasm"
 	cp "${GOROOT}/misc/wasm/wasm_exec.js" "${BUILD_DIR}"
 
 doc:

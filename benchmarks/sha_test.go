@@ -15,3 +15,14 @@ func TestSha256(t *testing.T) {
 		t.Errorf("actual: %d, expect: %d", actual, expect)
 	}
 }
+
+func TestSha512(t *testing.T) {
+
+	data := []byte{1, 2, 3, 4, 5, 6, 7, 8}
+	expect := "1818cc2acd207880a07afc360fd0da87e51ccf17e7c604c4eb16be5788322724c298e1fcc66eb293926993141ef0863c09eda383188cf5df49b910aacac17ec5"
+	actual := Sha512(data)
+
+	if !reflect.DeepEqual(expect, actual) {
+		t.Errorf("actual: %d, expect: %d", actual, expect)
+	}
+}

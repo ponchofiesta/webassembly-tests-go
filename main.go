@@ -84,6 +84,10 @@ func main() {
 		//js.Global().Get("console").Call("debug", "Go: sort")
 		return benchmarks.Sha256(DATA_BYTES)
 	})
+	exports["sha512"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: sort")
+		return benchmarks.Sha512(DATA_BYTES)
+	})
 	exports["aes"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: aes")
 		key := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}

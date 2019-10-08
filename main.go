@@ -140,6 +140,9 @@ func main() {
 		outData := copyByteArrayToJs(data)
 		return outData
 	})
+	exports["dom"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		return benchmarks.Dom(args[0].Int())
+	})
 
 	exports["prepare_test_data"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		js.Global().Get("console").Call("debug", "Go: prepare_test_data")

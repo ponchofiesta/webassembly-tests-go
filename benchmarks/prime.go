@@ -1,8 +1,8 @@
 package benchmarks
 
-func Prime(max uint64) []uint64 {
+func Prime(max uint32) []uint32 {
 
-	var primes []uint64
+	var primes []uint32
 
 	if max > 2 {
 		primes = append(primes, 2)
@@ -16,8 +16,8 @@ func Prime(max uint64) []uint64 {
 		sieve[i] = false
 	}
 
-	for x := uint64(1); x*x < max; x++ {
-		for y := uint64(1); y*y < max; y++ {
+	for x := uint32(1); x*x < max; x++ {
+		for y := uint32(1); y*y < max; y++ {
 
 			// Main part of Sieve of Atkin
 			n := (4 * x * x) + (y * y)
@@ -38,7 +38,7 @@ func Prime(max uint64) []uint64 {
 	}
 
 	// Mark all multiples of squares as non-prime
-	for r := uint64(5); r*r < max; r++ {
+	for r := uint32(5); r*r < max; r++ {
 		if sieve[r] {
 			for i := r * r; i < max; i += r * r {
 				sieve[i] = false
@@ -47,7 +47,7 @@ func Prime(max uint64) []uint64 {
 	}
 
 	// Print primes using sieve[]
-	for a := uint64(5); a < max; a++ {
+	for a := uint32(5); a < max; a++ {
 		if sieve[a] {
 			primes = append(primes, a)
 		}

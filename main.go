@@ -6,30 +6,6 @@ import (
 	Hanoi "webassembly_benchmarks_go/benchmarks/hanoi/closure"
 )
 
-var (
-	DATA_SORT_BASE  []benchmarks.User
-	DATA_SORT       []benchmarks.User
-	DATA_BYTES_BASE []byte
-	DATA_BYTES      []byte
-)
-
-func copyByteArrayToGo(input js.Value) []byte {
-	uint8arrayWrapper := js.Global().Get("Uint8Array").New(input)
-	data := make([]byte, uint8arrayWrapper.Get("byteLength").Int())
-	reader := js.TypedArrayOf(data)
-	reader.Call("set", uint8arrayWrapper)
-	reader.Release()
-	return data
-}
-
-func copyByteArrayToJs(input []byte) js.Value {
-	writer := js.TypedArrayOf(input)
-	data := js.Global().Get("Uint8Array").New(len(input))
-	data.Call("set", writer)
-	writer.Release()
-	return data
-}
-
 func main() {
 	done := make(chan struct{})
 	exports := make(map[string]interface{})
@@ -37,7 +13,7 @@ func main() {
 	exports["iterate"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: iterate")
 		benchmarks.Iterate(args[0].Int())
-		return nil
+		return js.Undefined()
 	})
 	exports["strings_dynamic"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: strings_dynamic")
@@ -51,7 +27,7 @@ func main() {
 		for i := 0; i < repeat; i++ {
 			benchmarks.StringsDynamic(a, b)
 		}
-		return nil
+		return js.Undefined()
 	})
 	exports["sum"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: strings_dynamic")
@@ -59,7 +35,7 @@ func main() {
 		for i := 0; i < repeat; i++ {
 			benchmarks.Sum([]int{1, 2, 3, 4, 5, 6, 7, 8, 9})
 		}
-		return nil
+		return js.Undefined()
 	})
 	exports["fibonacci"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: fobonacci")
@@ -73,12 +49,13 @@ func main() {
 	exports["sort"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: sort")
 		benchmarks.Sort(DATA_SORT)
-		return nil
+		return js.Undefined()
 	})
 	exports["prime"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: prime")
-		benchmarks.Prime(uint64(args[0].Float()))
-		return nil
+		primes := benchmarks.Prime(uint32(args[0].Int()))
+		data := copyUint32ArrayToJs(primes)
+		return data
 	})
 	exports["sha256"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: sort")
@@ -93,12 +70,12 @@ func main() {
 		key := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
 		iv := []byte{17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}
 		benchmarks.AesEncrypt(key, iv, DATA_BYTES)
-		return nil
+		return js.Undefined()
 	})
 	exports["deflate"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: deflate")
 		benchmarks.Deflate(DATA_BYTES)
-		return nil
+		return js.Undefined()
 	})
 	exports["convolve"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: convolve")
@@ -108,7 +85,7 @@ func main() {
 			0.0, 0.2, 0.0,
 		}
 		benchmarks.Convolve(args[0], matrix, 1)
-		return nil
+		return js.Undefined()
 	})
 	exports["convolve_mem"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: convolve_mem")
@@ -160,9 +137,9 @@ func main() {
 			}
 			DATA_SORT_BASE = users
 		case "bytes":
-			DATA_BYTES_BASE = []byte(args[1].String())
+			DATA_BYTES_BASE = copyByteArrayToGo(args[1])
 		}
-		return nil
+		return js.Undefined()
 	})
 	exports["reset_test_data"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		js.Global().Get("console").Call("debug", "Go: reset_test_data")
@@ -174,7 +151,7 @@ func main() {
 			DATA_BYTES = make([]byte, len(DATA_BYTES_BASE))
 			copy(DATA_BYTES, DATA_BYTES_BASE)
 		}
-		return nil
+		return js.Undefined()
 	})
 	exports["clear_test_data"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		js.Global().Get("console").Call("debug", "Go: clear_test_data")
@@ -186,7 +163,7 @@ func main() {
 			DATA_BYTES_BASE = nil
 			DATA_BYTES = nil
 		}
-		return nil
+		return js.Undefined()
 	})
 
 	js.Global().Get("wasm").Set("go", exports)

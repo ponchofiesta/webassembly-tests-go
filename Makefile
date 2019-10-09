@@ -5,14 +5,26 @@ GO ?= go1.12.9
 PROJECT=webassembly-benchmarks-go
 #export GOPATH=${PWD}/:$(shell go env GOPATH)
 export GOROOT=$(shell $(GO) env GOROOT)
-BUILD_DIR=./build
+export GOOS=js
+export GOARCH=wasm
+export GOGC=20
 
+ifeq ($(OS),Windows_NT)
+	BUILD_DIR=.\build
+else
+	BUILD_DIR=./build
+endif
 
 default: build
 
 build:
-	GOOS=js GOARCH=wasm GOGC=20 ${GO} build -o "${BUILD_DIR}/${PROJECT}.wasm"
+ifeq ($(OS),Windows_NT)
+    ${GO} build -o "${BUILD_DIR}\${PROJECT}.wasm"
+	copy "${GOROOT}\misc\wasm\wasm_exec.js" "${BUILD_DIR}"
+else
+    ${GO} build -o "${BUILD_DIR}/${PROJECT}.wasm"
 	cp "${GOROOT}/misc/wasm/wasm_exec.js" "${BUILD_DIR}"
+endif
 
 doc:
 	godoc -http=:6060 -index

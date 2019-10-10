@@ -19,21 +19,25 @@ default: build
 
 build:
 ifeq ($(OS),Windows_NT)
-	${GO} build -o "${BUILD_DIR}\${PROJECT}.wasm"
-	copy "${GOROOT}\misc\wasm\wasm_exec.js" "${BUILD_DIR}"
+	$(GO) build -o "${BUILD_DIR}\${PROJECT}.wasm"
+	copy "${GOROOT}\misc\wasm\wasm_exec.js" $(BUILD_DIR)
 else
-	${GO} build -o "${BUILD_DIR}/${PROJECT}.wasm"
-	cp "${GOROOT}/misc/wasm/wasm_exec.js" "${BUILD_DIR}"
+	$(GO) build -o "${BUILD_DIR}/${PROJECT}.wasm"
+	cp "${GOROOT}/misc/wasm/wasm_exec.js" $(BUILD_DIR)
 endif
 
 doc:
 	godoc -http=:6060 -index
 
 fmt:
-	${GO} fmt ./...
+	$(GO) fmt ./...
 
 test:
-	${GO} test ./...
+	$(GO) test ./...
 
 clean:
-	rm -rf "$BUILD_DIR"
+ifeq ($(OS),Windows_NT)
+	rmdir /S /Q $(BUILD_DIR)
+else
+	rm -rf $(BUILD_DIR)
+endif

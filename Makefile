@@ -19,10 +19,10 @@ default: build
 
 build:
 ifeq ($(OS),Windows_NT)
-    ${GO} build -o "${BUILD_DIR}\${PROJECT}.wasm"
+	${GO} build -o "${BUILD_DIR}\${PROJECT}.wasm"
 	copy "${GOROOT}\misc\wasm\wasm_exec.js" "${BUILD_DIR}"
 else
-    ${GO} build -o "${BUILD_DIR}/${PROJECT}.wasm"
+	${GO} build -o "${BUILD_DIR}/${PROJECT}.wasm"
 	cp "${GOROOT}/misc/wasm/wasm_exec.js" "${BUILD_DIR}"
 endif
 

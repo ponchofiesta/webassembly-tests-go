@@ -10,6 +10,11 @@ func main() {
 	done := make(chan struct{})
 	exports := make(map[string]interface{})
 
+	exports["base64"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: iterate")
+		data := copyByteArrayToGo(args[0])
+		return benchmarks.Base64(data)
+	})
 	exports["iterate"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: iterate")
 		benchmarks.Iterate(args[0].Int())

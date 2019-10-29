@@ -12,7 +12,7 @@ func Dom(n int) js.Value {
 	container := document.Call("createElement", "div")
 	body.Call("appendChild", container)
 
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < n; i++ {
 		header := document.Call("createElement", "h3")
 		header.Set("textContent", "Header "+strconv.Itoa(i))
 		paragraph := document.Call("createElement", "p")

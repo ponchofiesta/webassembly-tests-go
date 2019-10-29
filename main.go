@@ -15,6 +15,10 @@ func main() {
 		data := copyByteArrayToGo(args[0])
 		return benchmarks.Base64(data)
 	})
+	exports["base64_prepared"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: iterate")
+		return benchmarks.Base64(DATA_BYTES)
+	})
 	exports["iterate"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: iterate")
 		benchmarks.Iterate(args[0].Int())
@@ -64,6 +68,11 @@ func main() {
 	})
 	exports["sha256"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: sort")
+		data := copyByteArrayToGo(args[0])
+		return benchmarks.Sha256(data)
+	})
+	exports["sha256_prepared"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: sort")
 		return benchmarks.Sha256(DATA_BYTES)
 	})
 	exports["sha512"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
@@ -74,13 +83,23 @@ func main() {
 		//js.Global().Get("console").Call("debug", "Go: aes")
 		key := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
 		iv := []byte{17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32}
-		benchmarks.AesEncrypt(key, iv, DATA_BYTES)
-		return js.Undefined()
+		data := copyByteArrayToGo(args[0])
+		encrypted := benchmarks.AesEncrypt(key, iv, data)
+		encryptedJs := copyByteArrayToJs(encrypted)
+		return encryptedJs
 	})
 	exports["deflate"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: deflate")
-		benchmarks.Deflate(DATA_BYTES)
-		return js.Undefined()
+		data := copyByteArrayToGo(args[0])
+		compressed := benchmarks.Deflate(data)
+		compressedJs := copyByteArrayToJs(compressed)
+		return compressedJs
+	})
+	exports["deflate_prepared"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		//js.Global().Get("console").Call("debug", "Go: deflate")
+		compressed := benchmarks.Deflate(DATA_BYTES)
+		compressedJs := copyByteArrayToJs(compressed)
+		return compressedJs
 	})
 	exports["convolve"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: convolve")

@@ -77,7 +77,8 @@ func main() {
 	})
 	exports["sha512"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: sort")
-		return benchmarks.Sha512(DATA_BYTES)
+		data := copyByteArrayToGo(args[0])
+		return benchmarks.Sha512(data)
 	})
 	exports["aes"] = js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		//js.Global().Get("console").Call("debug", "Go: aes")
